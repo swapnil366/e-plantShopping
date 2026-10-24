@@ -2,11 +2,20 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "./CartSlice";
 
+/**
+ * CartItem component displays all items currently added to the shopping cart,
+ * calculates subtotals and total costs, and provides controls to update quantities
+ * or remove items.
+ */
 function CartItem({ onContinueShopping }) {
+  // Retrieve cart items from the Redux store state
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
-  // Calculate the total cost of all cart items.
+  /**
+   * Calculates the total cost of all items currently in the shopping cart.
+   * Iterates through the cart array using reduce and sums (price * quantity) for each item.
+   */
   const calculateTotalAmount = () => {
     return cart.reduce((total, item) => {
       const price = Number(item.cost) || 0;
@@ -15,7 +24,10 @@ function CartItem({ onContinueShopping }) {
     }, 0);
   };
 
-  // Handle incrementing item quantity in the cart
+  /**
+   * Handles increasing the quantity of a specific cart item.
+   * Dispatches the updateQuantity action with the incremented count.
+   */
   const handleIncrement = (item) => {
     dispatch(
       updateQuantity({
@@ -25,7 +37,10 @@ function CartItem({ onContinueShopping }) {
     );
   };
 
-  // Handle decrementing item quantity (ensures it doesn't go below 1)
+  /**
+   * Handles decreasing the quantity of a specific cart item.
+   * Ensures the quantity does not drop below 1 before dispatching the action.
+   */
   const handleDecrement = (item) => {
     if (Number(item.quantity) > 1) {
       dispatch(
@@ -37,19 +52,26 @@ function CartItem({ onContinueShopping }) {
     }
   };
 
-  // Handle removing an item completely from the cart
+  /**
+   * Handles removing an item completely from the cart state.
+   * Dispatches the removeItem action using the item's name as the identifier.
+   */
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
 
-  // Handle click event for continuing shopping
+  /**
+   * Triggers the navigation callback to return the user back to the product catalog view.
+   */
   const handleContinueShopping = (e) => {
     if (onContinueShopping) {
       onContinueShopping(e);
     }
   };
 
-  // Handle click event for checkout button
+  /**
+   * Handles the checkout button click event by showing a standard placeholder alert.
+   */
   const handleCheckoutShopping = () => {
     alert("Functionality to be added for future reference");
   };
@@ -78,15 +100,19 @@ function CartItem({ onContinueShopping }) {
                 </p>
 
                 <button
+                  className="cart-item-button cart-item-button-dec"
                   onClick={() => handleDecrement(item)}
                   disabled={Number(item.quantity) <= 1}
                 >
                   -
                 </button>
 
-                <span> {item.quantity} </span>
+                <span className="cart-item-quantity-value"> {item.quantity} </span>
 
-                <button onClick={() => handleIncrement(item)}>
+                <button
+                  className="cart-item-button cart-item-button-inc"
+                  onClick={() => handleIncrement(item)}
+                >
                   +
                 </button>
 
@@ -98,7 +124,10 @@ function CartItem({ onContinueShopping }) {
                   ).toFixed(2)}
                 </p>
 
-                <button onClick={() => handleRemove(item)}>
+                <button
+                  className="cart-item-delete"
+                  onClick={() => handleRemove(item)}
+                >
                   Remove
                 </button>
               </div>
@@ -109,7 +138,6 @@ function CartItem({ onContinueShopping }) {
             Total Amount: ${calculateTotalAmount().toFixed(2)}
           </h2>
 
-          {/* Required Action Buttons */}
           <div className="cart-action-buttons" style={{ marginTop: "20px" }}>
             <button
               className="get-started-btn"
