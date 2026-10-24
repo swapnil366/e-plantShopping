@@ -1,9 +1,8 @@
-
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "./CartSlice";
 
-function CartItem() {
+function CartItem({ onContinueShopping }) {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
@@ -16,6 +15,7 @@ function CartItem() {
     }, 0);
   };
 
+  // Handle incrementing item quantity in the cart
   const handleIncrement = (item) => {
     dispatch(
       updateQuantity({
@@ -25,6 +25,7 @@ function CartItem() {
     );
   };
 
+  // Handle decrementing item quantity (ensures it doesn't go below 1)
   const handleDecrement = (item) => {
     if (Number(item.quantity) > 1) {
       dispatch(
@@ -36,8 +37,21 @@ function CartItem() {
     }
   };
 
+  // Handle removing an item completely from the cart
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
+  };
+
+  // Handle click event for continuing shopping
+  const handleContinueShopping = (e) => {
+    if (onContinueShopping) {
+      onContinueShopping(e);
+    }
+  };
+
+  // Handle click event for checkout button
+  const handleCheckoutShopping = () => {
+    alert("Functionality to be added for future reference");
   };
 
   return (
@@ -92,9 +106,25 @@ function CartItem() {
           ))}
 
           <h2>
-            Total Amount: $
-            {calculateTotalAmount().toFixed(2)}
+            Total Amount: ${calculateTotalAmount().toFixed(2)}
           </h2>
+
+          {/* Required Action Buttons */}
+          <div className="cart-action-buttons" style={{ marginTop: "20px" }}>
+            <button
+              className="get-started-btn"
+              onClick={(e) => handleContinueShopping(e)}
+              style={{ marginRight: "10px" }}
+            >
+              Continue Shopping
+            </button>
+            <button
+              className="get-started-btn"
+              onClick={handleCheckoutShopping}
+            >
+              Checkout
+            </button>
+          </div>
         </>
       )}
     </div>
